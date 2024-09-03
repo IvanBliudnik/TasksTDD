@@ -3,6 +3,7 @@ import {Todolist} from "./Todolist";
 import {useReducer, useState} from "react";
 import {v1} from "uuid";
 import {addTaskAC, removeTaskAC, tasksReducer} from "./model/tasksReducer";
+import {changeFilterAC, filterReducer} from "./model/filterReducer";
 
 
 export type TaskType = {
@@ -16,13 +17,14 @@ export type FilterValuesType = 'all' | 'active' | 'completed'
 function App() {
 
 	const [tasks, dispatchTasks] = useReducer(tasksReducer,[
-		//с кем работаю и какой state
+		//с кем работаю и какой state (для крупных обьектов)
 		{id: v1(), title: 'HTML&CSS', isDone: true},
 		{id: v1(), title: 'JS', isDone: true},
 		{id: v1(), title: 'ReactJS', isDone: false},
 	])
 
-	const [filter, setFilter] = useState<FilterValuesType>('all')
+	const [filter, dispatchFilter] = useReducer( filterReducer,'all')
+	//useState для примитивов
 
 	const removeTask = (taskId: string) => {
 		dispatchTasks(removeTaskAC(taskId))
@@ -33,7 +35,7 @@ function App() {
 	}
 
 	const changeFilter = (filter: FilterValuesType) => {
-		setFilter(filter)
+		dispatchFilter(changeFilterAC(filter))
 	}
 
 	let tasksForTodolist = tasks
